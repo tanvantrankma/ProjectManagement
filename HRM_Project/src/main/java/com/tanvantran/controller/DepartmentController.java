@@ -37,7 +37,7 @@ public class DepartmentController {
 //			DepartmentDto departmentDto = new DepartmentDto();
 //			departmentDto.setId(department.getId());
 //			departmentDto.setName(department.getName());
-			
+// Mapper			
 			DepartmentDto departmentDto = modelMapper.map(department, DepartmentDto.class);
 			
 			listDepartmentDtos.add(departmentDto);

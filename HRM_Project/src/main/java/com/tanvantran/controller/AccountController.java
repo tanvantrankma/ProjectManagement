@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.sql.Update;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,23 +35,31 @@ public class AccountController {
 	@Autowired
 	private IAccountService accountService;
 	
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	@GetMapping()
 	public ResponseEntity<?> getAllAccount() {
 		List<Account> listAccounts = accountService.getAllAccount();
 		
-		List<AccountDto> listAccountDtos = new ArrayList<>();
-		for (Account account : listAccounts) {
-			AccountDto accountDto = new AccountDto();
-			accountDto.setId(account.getId());
-			accountDto.setEmail(account.getEmail());
-			accountDto.setUsername(account.getUsername());
-			accountDto.setFullname(account.getFullname());
-			accountDto.setDepartment(account.getDepartment().getName());
-			accountDto.setPosition(account.getPosition().getName().toString());
-			accountDto.setCreateDate(account.getCreateDate());
-			
-			listAccountDtos.add(accountDto);
-		}
+//		List<AccountDto> listAccountDtos = new ArrayList<>();
+		
+//		for (Account account : listAccounts) {
+//			AccountDto accountDto = new AccountDto();
+//			accountDto.setId(account.getId());
+//			accountDto.setEmail(account.getEmail());
+//			accountDto.setUsername(account.getUsername());
+//			accountDto.setFullname(account.getFullname());
+//			accountDto.setDepartment(account.getDepartment().getName());
+//			accountDto.setPosition(account.getPosition().getName().toString());
+//			accountDto.setCreateDate(account.getCreateDate());
+//			
+//			listAccountDtos.add(accountDto);
+//		}
+		
+		// Stream
+		List<AccountDto> listAccountDtos = listAccounts.stream()
+				.map(account -> modelMapper.map(account, AccountDto.class)).toList();
 		
 		return new ResponseEntity<>(listAccountDtos, HttpStatus.OK);
 	}
