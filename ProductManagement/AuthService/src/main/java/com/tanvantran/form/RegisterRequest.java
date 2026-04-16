@@ -1,0 +1,19 @@
+package com.tanvantran.form;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
+@Getter
+@Setter
+public class RegisterRequest {
+    private String email;
+    private String username;
+    private String fullname;
+    private short orderId;
+    private short productId;
+    private String password;
+}
+
+
