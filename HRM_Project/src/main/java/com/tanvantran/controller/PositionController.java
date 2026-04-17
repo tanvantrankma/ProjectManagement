@@ -3,6 +3,7 @@ package com.tanvantran.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,17 +25,26 @@ public class PositionController {
 	@Autowired
 	private IPositionService positionService;
 	
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	@GetMapping()
 	public ResponseEntity<?> getAllPosition() {
 		List<Position> listPositions = positionService.getAllPosition();
 		
-		List<PositionDto> listPositionDtos = new ArrayList<>();
-		for (Position position : listPositions) {
-			PositionDto positionDto = new PositionDto();
-			positionDto.setId(position.getId());
+//		List<PositionDto> listPositionDtos = new ArrayList<>();
+//		for (Position position : listPositions) {
+//			PositionDto positionDto = new PositionDto();
+//			positionDto.setId(position.getId());
+//			positionDto.setName(position.getName().toString());
+//			listPositionDtos.add(positionDto);
+//		}
+		
+		List<PositionDto> listPositionDtos = listPositions.stream().map(position -> {
+			PositionDto positionDto = modelMapper.map(position, PositionDto.class);
 			positionDto.setName(position.getName().toString());
-			listPositionDtos.add(positionDto);
-		}
+			return positionDto;
+		}).toList();
 		
 		return new ResponseEntity<>(listPositionDtos, HttpStatus.OK);
 	}
