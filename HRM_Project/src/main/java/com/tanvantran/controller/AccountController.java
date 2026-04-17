@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hibernate.sql.Update;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +60,13 @@ public class AccountController {
 		
 		// Stream
 		List<AccountDto> listAccountDtos = listAccounts.stream()
-				.map(account -> modelMapper.map(account, AccountDto.class)).toList();
+				.map(account -> {
+					AccountDto acountDto = modelMapper.map(account, AccountDto.class);
+					acountDto.setPosition(account.getPosition().getName().toString());
+					return acountDto;
+							}).toList();
+				
+		
 		
 		return new ResponseEntity<>(listAccountDtos, HttpStatus.OK);
 	}
