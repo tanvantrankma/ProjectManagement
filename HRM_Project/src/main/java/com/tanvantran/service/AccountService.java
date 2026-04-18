@@ -46,9 +46,12 @@ public class AccountService implements IAccountService {
 			// email LIKE search
 			AccountSpecification emailAccountSpecification = new AccountSpecification("email", "LIKE", search);
 			// department LIKE search
-//			AccountSpecification departmentAccountSpecification = new AccountSpecification("department", "LIKE", search);
+			AccountSpecification departmentAccountSpecification = new AccountSpecification("department", "LIKE", search);
+			// username LIKE search
+			AccountSpecification usernameAccountSpecification = new AccountSpecification("username", "LIKE", search);
 			
-			where = Specification.where(fullnameAccountSpecification).or(emailAccountSpecification);
+			where = Specification.where(fullnameAccountSpecification).or(emailAccountSpecification)
+																	.or(departmentAccountSpecification).or(usernameAccountSpecification);
 		}
 		
 		return accountRepository.findAll(where, pageable);

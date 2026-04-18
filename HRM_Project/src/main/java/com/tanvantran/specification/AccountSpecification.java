@@ -26,9 +26,23 @@ public class AccountSpecification implements Specification<Account>{
 	@Override
 	public @Nullable Predicate toPredicate(Root<Account> root, CriteriaQuery<?> query,
 			CriteriaBuilder criteriaBuilder) {
-		
+		// Tìm kiếm theo LIKE
 		if (operator.equalsIgnoreCase("LIKE")) {
-			return criteriaBuilder.like(root.get(field), "%" + value.toString() + "%");
+			if (field.equalsIgnoreCase("department")) {
+				return criteriaBuilder.like(root.get(field).get("name"), "%" + value.toString() + "%");
+			}else {
+				return criteriaBuilder.like(root.get(field), "%" + value.toString() + "%");
+			}
+		}
+		
+		// Lọc dữ liệu Fillter id : 2-5
+		if (operator.equalsIgnoreCase("BETWEEN")) {
+//			value[2,5]
+			Short[] values = (Short[]) value;
+			short idFrom = values[0];
+			short idTo = values[1];
+			return criteriaBuilder.between(root.get(field), idFrom, idTo);
+			
 		}
 		
 		return null;
