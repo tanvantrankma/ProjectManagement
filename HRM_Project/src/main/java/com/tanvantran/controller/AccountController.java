@@ -2,7 +2,9 @@ package com.tanvantran.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.sql.Update;
 import org.modelmapper.ModelMapper;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +32,9 @@ import com.tanvantran.entity.Account;
 import com.tanvantran.form.AccountFormForCreating;
 import com.tanvantran.form.AccountFormForUpdating;
 import com.tanvantran.service.IAccountService;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "api/v1/accounts")
@@ -72,22 +78,44 @@ public class AccountController {
 	}
 	
 	// getAccountById()
-	
+	 // Exception
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getAccountById(@PathVariable(name = "id") Short id) {
-		Account account = accountService.getAccountById(id);
-		
-		AccountDto accountDto = new AccountDto();
-		accountDto.setId(account.getId());
-		accountDto.setEmail(account.getEmail());
-		accountDto.setUsername(account.getUsername());
-		accountDto.setFullname(account.getFullname());
-		accountDto.setDepartment(account.getDepartment().getName());
-		accountDto.setPosition(account.getPosition().getName().toString());
-		accountDto.setCreateDate(account.getCreateDate());
-		
-		return new ResponseEntity<>(accountDto, HttpStatus.OK);
+//		try {
+			Account account = accountService.getAccountById(id);
+			
+			AccountDto accountDto = new AccountDto();
+			accountDto.setId(account.getId());
+			accountDto.setEmail(account.getEmail());
+			accountDto.setUsername(account.getUsername());
+			accountDto.setFullname(account.getFullname());
+			accountDto.setDepartment(account.getDepartment().getName());
+			accountDto.setPosition(account.getPosition().getName().toString());
+			accountDto.setCreateDate(account.getCreateDate());
+			
+			return new ResponseEntity<>(accountDto, HttpStatus.OK);
+//		} catch (EntityNotFoundException e) {
+//			Map<String, Object> body = new HashMap<>();
+//			body.put("status", HttpStatus.NOT_FOUND);
+//			body.put("message", "Account Not Found with id = " + id);
+//			
+//			return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+//		}
 	}
+	
+	// Xử lý EntityNotFoundException
+//	@ExceptionHandler(EntityNotFoundException.class)
+//	public ResponseEntity<?> handleEntityNotFound(EntityNotFoundException ex, 
+//			HttpServletRequest request) {
+//		Map<String, Object> body = new HashMap<>();
+//		body.put("status", HttpStatus.NOT_FOUND.value());
+//		body.put("error", "Not Found");
+//		body.put("message_ex", ex.getMessage());
+//		body.put("path", request.getRequestURI());
+//			
+//			return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+//
+//	}
 	
 	// Tạo mới Account
 	
