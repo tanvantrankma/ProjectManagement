@@ -2,13 +2,16 @@ package com.tanvantran.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.tanvantran.entity.Account;
 import com.tanvantran.form.AccountFormForCreating;
 import com.tanvantran.form.AccountFormForUpdating;
 
 public interface IAccountService {
 
-	List<Account> getAllAccount();
+	Page<Account> getAllAccount(Pageable pageable, String search);
 
 	Account getAccountById(Short id);
 

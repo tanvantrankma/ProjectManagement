@@ -8,6 +8,8 @@ import org.hibernate.sql.Update;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -40,8 +42,8 @@ public class AccountController {
 	private ModelMapper modelMapper;
 	
 	@GetMapping()
-	public ResponseEntity<?> getAllAccount() {
-		List<Account> listAccounts = accountService.getAllAccount();
+	public ResponseEntity<?> getAllAccount(Pageable pageable, @RequestParam(required = false) String search) {
+		Page<Account> pageAccounts = accountService.getAllAccount(pageable, search);
 		
 //		List<AccountDto> listAccountDtos = new ArrayList<>();
 		
@@ -59,16 +61,14 @@ public class AccountController {
 //		}
 		
 		// Stream
-		List<AccountDto> listAccountDtos = listAccounts.stream()
+		Page<AccountDto> pageAccountDto = pageAccounts
 				.map(account -> {
 					AccountDto acountDto = modelMapper.map(account, AccountDto.class);
 					acountDto.setPosition(account.getPosition().getName().toString());
 					return acountDto;
-							}).toList();
-				
-		
-		
-		return new ResponseEntity<>(listAccountDtos, HttpStatus.OK);
+							});
+			
+		return new ResponseEntity<>(pageAccounts, HttpStatus.OK);
 	}
 	
 	// getAccountById()

@@ -1,6 +1,7 @@
 package com.tanvantran.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface IAccountRepository extends JpaRepository<Account, Short> {
+public interface IAccountRepository extends JpaRepository<Account, Short>, JpaSpecificationExecutor<Account> {
 	
 	// Khai báo hàm tìm Account theo Username/ Optional không ra giá trị null nghĩa là hoặc có account hoặc empty
 	Optional<Account> findByUsername(String username);

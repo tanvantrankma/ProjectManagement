@@ -3,6 +3,9 @@ package com.tanvantran.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.tanvantran.entity.Account;
@@ -13,7 +16,9 @@ import com.tanvantran.form.AccountFormForUpdating;
 import com.tanvantran.repository.IAccountRepository;
 import com.tanvantran.repository.IDepartmentRepository;
 import com.tanvantran.repository.IPositionRepository;
+import com.tanvantran.specification.AccountSpecification;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -30,9 +35,23 @@ public class AccountService implements IAccountService {
 	private IPositionRepository positionRepository;
 
 	@Override
-	public List<Account> getAllAccount() {
-		// TODO Auto-generated method stub
-		return accountRepository.findAll();
+	public Page<Account> getAllAccount(Pageable pageable, String search) {
+		
+		// Điều kiện tổng
+		Specification<Account> where = null;
+		
+		if (!StringUtils.isEmpty(search)) {
+			// fullname LIKE search
+			AccountSpecification fullnameAccountSpecification = new AccountSpecification("fullname", "LIKE", search);
+			// email LIKE search
+			AccountSpecification emailAccountSpecification = new AccountSpecification("email", "LIKE", search);
+			// department LIKE search
+//			AccountSpecification departmentAccountSpecification = new AccountSpecification("department", "LIKE", search);
+			
+			where = Specification.where(fullnameAccountSpecification).or(emailAccountSpecification);
+		}
+		
+		return accountRepository.findAll(where, pageable);
 	}
 
 	@Override
