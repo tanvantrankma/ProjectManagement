@@ -35,7 +35,8 @@ public class WebSecurityConfiguration {
 		auth
 		// Cho phép gọi login không cần xác thực
         .requestMatchers("/api/v1/login/**").permitAll()
-
+        
+        // Cấu hình cho Account
         // Chỉ ADMIN được phép tạo/sửa/xoá account
         .requestMatchers(HttpMethod.POST,   "/api/v1/accounts/**").hasRole("ADMIN")
         .requestMatchers(HttpMethod.PUT,    "/api/v1/accounts/**").hasRole("ADMIN")
@@ -43,7 +44,27 @@ public class WebSecurityConfiguration {
 
         // ADMIN & USER đều xem được danh sách / chi tiết
         .requestMatchers(HttpMethod.GET, "/api/v1/accounts/**").hasAnyRole("ADMIN", "USER")
+        
+        //-- Cấu hình cho Department
+        
+        // Chỉ ADMIN được phép tạo/sửa/xoá account
+        .requestMatchers(HttpMethod.POST,   "/api/v1/departments/**").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.PUT,    "/api/v1/departments/**").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.DELETE, "/api/v1/departments/**").hasRole("ADMIN")
 
+        // ADMIN & USER đều xem được danh sách / chi tiết
+        .requestMatchers(HttpMethod.GET, "/api/v1/departments/**").hasAnyRole("ADMIN", "USER")
+        
+        //-- Cấu hình cho Position
+        
+        // Chỉ ADMIN được phép tạo/sửa/xoá account
+        .requestMatchers(HttpMethod.POST,   "/api/v1/positions/**").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.PUT,    "/api/v1/positions/**").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.DELETE, "/api/v1/positions/**").hasRole("ADMIN")
+
+        // ADMIN & USER đều xem được danh sách / chi tiết
+        .requestMatchers(HttpMethod.GET, "/api/v1/positions/**").hasAnyRole("ADMIN", "USER")
+        
         // Các request khác: chỉ cần authenticated
         .anyRequest().authenticated()).httpBasic(Customizer.withDefaults());
 
