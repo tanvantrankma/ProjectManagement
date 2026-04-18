@@ -46,6 +46,28 @@ public class Account implements Serializable {
 //	@Temporal(TemporalType.TIMESTAMP) // Tương ứng với DATETIME dưới DB
 	@CreationTimestamp // Tương ứng với DEFAULT NOW() dưới DB
 	private Date createDate;
+	
+	@Column(name = "password", length = 800)
+	private String password;
+	
+	@Column(name = "Role", length = 50)
+	private String role;
+	
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	public Account() {
 		super();

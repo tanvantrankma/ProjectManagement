@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetailsPasswordService;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.tanvantran.entity.Account;
 import com.tanvantran.form.AccountFormForCreating;
 import com.tanvantran.form.AccountFormForUpdating;
 
-public interface IAccountService {
+public interface IAccountService extends UserDetailsService {
 
 	Page<Account> getAllAccount(Pageable pageable, String search);
 

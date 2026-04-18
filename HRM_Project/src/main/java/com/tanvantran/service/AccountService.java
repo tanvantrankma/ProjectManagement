@@ -1,11 +1,19 @@
 package com.tanvantran.service;
 
+import java.net.Authenticator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+//import org.springframework.data.jpa.repository.query.EqlParser.New_valueContext;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.tanvantran.entity.Account;
@@ -159,6 +167,19 @@ public class AccountService implements IAccountService {
 	public List<Account> getAccountByPosition(String positionName) {
 		// TODO Auto-generated method stub
 		return accountRepository.getAccountByPosition(positionName);
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Account account = accountRepository.findByUsername(username).orElse(null);
+		if (account == null) {
+			throw new UsernameNotFoundException(username);
+		}
+		//ROLE_ADMIN
+		//ROLE_USER
+		UserDetails userDetails = new User(account.getUsername(), account.getPassword(), 
+							AuthorityUtils.createAuthorityList("ROLE_" + account.getRole()));
+		return userDetails;
 	}
 
 }
