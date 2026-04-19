@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import com.tanvantran.entity.Account;
 import com.tanvantran.entity.Department;
 import com.tanvantran.entity.Position;
+import com.tanvantran.exception.BadRequestException;
+import com.tanvantran.exception.ResourceNotFoundException;
 import com.tanvantran.form.AccountFormForCreating;
 import com.tanvantran.form.AccountFormForUpdating;
 import com.tanvantran.repository.IAccountRepository;
@@ -68,22 +70,44 @@ public class AccountService implements IAccountService {
 	@Override
 	public Account getAccountById(Short id) {
 		// TODO Auto-generated method stub
-		return accountRepository.getById(id);
+		return accountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account Not Found:" + id));
 	}
 
 	@Override
 	public Account createAccount(AccountFormForCreating formCreating) {
+		// Kiểm tra dữ liệu
+		if (formCreating == null) {
+			throw new BadRequestException("Dữ liệu Form không hợp lệ");
+		}
+		if (formCreating.getUsername() == null || formCreating.getUsername().isEmpty()) {
+			throw new BadRequestException("Username không hợp lệ");
+		}
+		if (formCreating.getFullname() == null || formCreating.getFullname().isEmpty()) {
+			throw new BadRequestException("Fullname không hợp lệ");
+		}
+		if (formCreating.getEmail() == null || formCreating.getEmail().isEmpty()) {
+			throw new BadRequestException("Email không hợp lệ");
+		}
+		if (formCreating.getDepartmentId() <= 0) {
+			throw new BadRequestException("Department không hợp lệ");
+		}
+		if (formCreating.getPositionId() <= 0) {
+			throw new BadRequestException("Position không hợp lệ");
+		}
+		
 		Account account = new Account();
 		account.setEmail(formCreating.getEmail());
 		account.setUsername(formCreating.getUsername());
 		account.setFullname(formCreating.getFullname());
 		
 //		departmentId ==> tìm ra DepartmentService tương ứng
-		Department department = departmentRepository.getById(formCreating.getDepartmentId());
+		Department department = departmentRepository.findById(formCreating.getDepartmentId())
+				.orElseThrow(()-> new ResourceNotFoundException("Department Not Found:" + formCreating.getDepartmentId()));
 		account.setDepartment(department);
 		
 //		positionId --> tìm ra Position tương ứng
-		Position position = positionRepository.getById(formCreating.getDepartmentId());
+		Position position = positionRepository.findById(formCreating.getPositionId())
+				.orElseThrow(()-> new ResourceNotFoundException("Position Not Found:" + formCreating.getPositionId()));
 		account.setPosition(position);
 		
 		Account newAccount = accountRepository.save(account);
